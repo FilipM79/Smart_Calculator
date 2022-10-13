@@ -1,20 +1,39 @@
 package calculator
 
+import kotlin.system.exitProcess
+
 fun main() {
     
-    print("For calculating sum, input two integer numbers in one line, separated by space:\n> ")
-    val inputString = readln()
-    val inputContainsEmptySpace = inputString.contains(" ")
-
-    try {
-        if (inputContainsEmptySpace) {
-            val x = inputString.substringBefore(" ").toInt()
-            val y = inputString.substringAfter(" ").toInt()
-            println(x + y)
+    println("For calculating sum, input two integer numbers in one line, separated by space:")
+    
+    while (true) {
+        print("> ")
+        val inputString = readln()
+        
+        if (inputString == "/exit") {
+            println("Bye!")
+            exitProcess(0)
+            
+        } else if (inputString.isEmpty()) {
+            print("> ")
+            continue
+            
         } else {
-            println("There is no space between inputs.")
+            val inputContainsEmptySpace = inputString.contains(" ")
+    
+            try {
+                val x = inputString.substringBefore(" ").toInt()
+                val y = inputString.substringAfter(" ").toInt()
+        
+                if (inputContainsEmptySpace) {
+                    println(x + y)
+                } else {
+                    println(x)
+                }
+        
+            } catch (e: NumberFormatException) {
+                println("Invalid input. It works only with two integer numbers.")
+            }
         }
-    } catch (e: NumberFormatException) {
-        println("Invalid input. It works only with two integer numbers.")
     }
 }
