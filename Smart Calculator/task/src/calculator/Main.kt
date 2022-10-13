@@ -3,35 +3,37 @@ package calculator
 import kotlin.system.exitProcess
 
 fun main() {
-    println("For calculating sum, input two integer numbers in one line, separated by space:")
+    println("For calculating sum, input integer numbers in one line, separated by space:")
     
     while (true) {
-        print("> ")
+//        print("> ")
         val inputString = readln()
-        
+    
         if (inputString == "/exit") {
             println("Bye!")
             exitProcess(0)
-            
-        } else if (inputString.isEmpty()) {
-            print("> ")
-            continue
-            
-        } else {
-            val inputContainsEmptySpace = inputString.contains(" ")
-    
-            try {
-                val x = inputString.substringBefore(" ").toInt()
-                val y = inputString.substringAfter(" ").toInt()
         
-                if (inputContainsEmptySpace) {
-                    println(x + y)
-                } else {
-                    println(x)
+        } else if (inputString.isEmpty()) {
+//            print("> ")
+            continue
+        
+        } else if (inputString == "/help") {
+            println("The program calculates the sum of numbers")
+            continue
+    
+        } else {
+            
+            try {
+                val listOfStrings = inputString.split(" ")
+                val listOfNumsToSum = mutableListOf<Int>()
+                
+                for (string in listOfStrings) {
+                    listOfNumsToSum.add(string.toInt())
                 }
+                println(listOfNumsToSum.sum())
         
             } catch (e: NumberFormatException) {
-                println("Invalid input. It works only with two integer numbers.")
+                println("Invalid input.")
             }
         }
     }
