@@ -3,7 +3,6 @@ package calculator
 import kotlin.system.exitProcess
 
 fun main() {
-    
     println("For calculating sum, input two integer numbers in one line, separated by space:")
     
     while (true) {
