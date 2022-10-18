@@ -10,11 +10,11 @@ fun main() {
         val inputString = readln().trim() // reading input string
         
         if (inputString.isEmpty()) {
-            println("Starting main - string is empty.")
+//            println("Starting main - string is empty.")
             continue
             
         } else if (inputString.startsWith("/")) {
-            println("Starting main - check commands")
+//            println("Starting main - check commands")
             checkCommands(inputString)
             
         } else {
@@ -27,15 +27,15 @@ fun main() {
             val invalidSecondVariable = input.validationMap["invalidSecondVariable"] ?: false
     
             if (setVariable) {
-                println("Starting main - setVariable is true")
+//                println("Starting main - setVariable is true")
                 inputMap.putAll(setVariable(inputString, inputMap))
         
             } else if (getVariable) {
-                println("Starting main - getVariable is true")
+//                println("Starting main - getVariable is true")
                 getVariable(inputMap, inputString, true, invalidSecondVariable)
         
             } else {
-                println("Starting main else - both getVariable and SetVariable are false.")
+//                println("Starting main else - both getVariable and SetVariable are false.")
                 processingInput(inputString, inputMap, invalidExpression)
             }
         }
@@ -45,7 +45,7 @@ fun main() {
 data class ValidateInput(private val inputString: String, val inputMap: MutableMap<String, Int>) {
     var validationMap = mapOf<String, Boolean>()
     init {
-        println("Class validate start")
+//        println("Class validate start")
         var validGetVariable = false
         var validSetVariable = false
         var checkCommands = false
@@ -54,14 +54,14 @@ data class ValidateInput(private val inputString: String, val inputMap: MutableM
         var invalidAssignment = false
         var stringForProcessing = false
         var invalidExpression = false
-        var invalidSecondVariable = false
+        val invalidSecondVariable = false
     
         if (inputString.startsWith("/")) { // if there is a command character
 //            println("Validating: Input string starts with a command sign.")
             checkCommands = true
         
         } else if (inputString.contains("=")) { // if there is '=' in a string
-            println("Validating: Input string contains an equal sign.")
+//            println("Validating: Input string contains an equal sign.")
             validEqual = true
             val key = inputString.substringBefore("=").trim()
             val value = inputString.substringAfter("=").trim()
@@ -80,19 +80,18 @@ data class ValidateInput(private val inputString: String, val inputMap: MutableM
             
             // checking for invalid input ...
         } else if (inputString.matches("(\\s*)?([+|-])?([a-zA-Z]+)(\\s*)?".toRegex())) { // if it resembles a variable
-            println("Validating: Input string contains a possible variable.")
+//            println("Validating: Input string contains a possible variable.")
             validGetVariable = true
     
         } else if ( inputString.endsWith("-")
             || inputString.endsWith("+")
-            || inputString.contains("(-|\\++){2,}(\\s*)?\\S".toRegex()) // double sign with a digit
             || inputString.contains("(\\d+)([+|-]+)(\\d+)".toRegex()) // digits and sign with no space
             || inputString.contains("(\\w+)(\\s+)([+|-]+)?(\\w+)".toRegex()) // something with space but no sign
             || inputString.contains("(\\w+)([+|-]+)(\\s+)?(\\w+)?".toRegex()) // something with space but no sign
             || inputString.contains("[!-']".toRegex()) // input string contains special characters
             
         ) {
-            println("Validating: Input string invalid expression is set to true.")
+//            println("Validating: Input string invalid expression is set to true.")
             invalidExpression = true
         
         } else if (inputString.contains(" ")) {
@@ -109,7 +108,7 @@ data class ValidateInput(private val inputString: String, val inputMap: MutableM
             }
         
         } else {
-            println("Validating: Input string is for further processing.")
+//            println("Validating: Input string is for further processing.")
             stringForProcessing = true
         }
         
@@ -128,12 +127,11 @@ data class ValidateInput(private val inputString: String, val inputMap: MutableM
         checkInputForErrors()
     }
     private fun checkInputForErrors() {
-        println("Check for input errors started.")
+//        println("Check for input errors started.")
         val validEqual = validationMap["validEqual"] ?: false
         val invalidIdentifier = validationMap["invalidIdentifier"] ?: false
         val invalidAssignment = validationMap["invalidAssignment"] ?: false
         val invalidExpression = validationMap["invalidExpression"] ?: false
-        val invalidSecondVariable = validationMap["invalidSecondVariable"] ?: false
         
         if (invalidExpression) {
             println("Invalid expression")
@@ -145,17 +143,17 @@ data class ValidateInput(private val inputString: String, val inputMap: MutableM
             } else if (invalidAssignment) {
                 println("Invalid assignment")
                 
-            } else if (invalidSecondVariable) {
-                println("prc")
+//            } else if (invalidSecondVariable) {
+//                println("prc - a dje ti je druga!?")
             }
-        } else {
-            println("No input errors found.")
+//        } else {
+//            println("No input errors found.")
         }
     }
 }
 fun checkCommands(inputString: String) {
     
-    println("Check commands started")
+//    println("Check commands started")
     when (inputString) {
         "/exit" -> {
             println("Bye!")
@@ -179,66 +177,82 @@ fun getVariable(
     
     var existingVariable = false
     
-    println("Get variable started.")
+//    println("Get variable started.")
     if (!invalidSecondVariable) {
         if (inputString.startsWith("-")) {
+//            println("Ovde stize")
             if (inputMap.containsKey(inputString.substringAfter("-"))) {
+//                println("sadrzi minus")
                 if (getVariable) {
-                    println("Returning a variable with opposite sign, because it has an additional minus.")
+//                    println("Returning a variable with opposite sign, because it has an additional minus.")
                     println(-inputMap.getValue(inputString.substringAfter("-")))
                 }
                 existingVariable = true
             
+            } else if (!inputString.trim().contains(" ")){
+                println("Unknown variable")
+                
             } else {
-                println("Unknown variable 1")
+                println("Unknown variable")
             }
         
         } else if (inputString.startsWith("+")) {
             if (inputMap.containsKey(inputString.substringAfter("+"))) {
                 if (getVariable) {
-                    println("Returning a variable with the same sign, because it has an additional plus.")
+//                    println("Returning a variable with the same sign, because it has an additional plus.")
                     println(inputMap.getValue(inputString.substringAfter("+")))
                 }
                 existingVariable = true
             
             } else {
-                println("Unknown variable 2")
+                println("Unknown variable")
             }
         
         } else {
             if (inputMap.containsKey(inputString)) {
                 if (getVariable) {
-                    println("Returning a variable.")
+//                    println("Returning a variable.")
                     println(inputMap[inputString])
                 }
                 existingVariable = true
             
             } else {
-                println("Unknown variable 3")
+                println("Unknown variable")
             }
         }
     }
     return existingVariable
 }
 fun setVariable(inputString: String, inputMap: MutableMap<String, Int>): MutableMap<String, Int> {
-    println("Set variable started.")
+//    println("Set variable started.")
     val key = inputString.substringBefore("=").trim()
     val value = inputString.substringAfter("=").trim()
-    val valueIsNotDigit = !value.matches("\\d+".toRegex())
-    var valueIsExistingVariable = false
+    val valueIsNotDigit = !value.matches("([+|-])?\\d+".toRegex())
     
     if (valueIsNotDigit && getVariable(inputMap, value)) {
-        println("Setting a variable to an existing variable value")
-        inputMap[key] = inputMap.getValue(value)
+//        println("Setting a variable to an existing variable value")
+        if (value.contains("-")) {
+            inputMap[key] = -inputMap.getValue(value.substringAfter("-"))
+        } else if (value.contains("+")) {
+            inputMap[key] = inputMap.getValue(value.substringAfter("+"))
+        } else {
+            inputMap[key] = inputMap.getValue(value)
+        }
+        
     } else {
-        inputMap[key] = value.toInt()
-        println("Setting a variable to a number")
+        try {
+            inputMap[key] = value.toInt()
+//        println("Setting a variable to a number")
+        } catch (e: NumberFormatException) {
+            print("")
+        }
+        
     }
     
     return inputMap
 }
 fun processingInput(inputString: String, inputMap: MutableMap<String, Int>, invalidExpression: Boolean) {
-    println("Processing input started.")
+//    println("Processing input started.")
     val inputParts: List<String>
     val sumString = mutableListOf<String>()
     var sum = 0
@@ -246,12 +260,12 @@ fun processingInput(inputString: String, inputMap: MutableMap<String, Int>, inva
     var existingVariable = false
     
     fun checkingPartForMinus(part: String) {
-        println("Part: $part")
-        println("Checking part for minus")
+//        println("Part: $part")
+//        println("Checking part for minus")
         
         if (part.contains("-")) {
-            println("Part: $part")
-            println("Part contains minus")
+//            println("Part: $part")
+//            println("Part contains minus")
             
             var minus = 0
             part.forEach { char ->
@@ -260,116 +274,116 @@ fun processingInput(inputString: String, inputMap: MutableMap<String, Int>, inva
                 }
             }
             
-            println("Adding a minus to a string, because there is an odd number of minuses.")
+//            println("Adding a minus to a string, because there is an odd number of minuses.")
             if (minus > 0 && minus % 2 != 0) {
                 sumString.add("-")
             }
             
         } else {
-            println("Part: $part")
-            println("Part - else -> doesn't contain minus")
+//            println("Part: $part")
+//            println("Part - else -> doesn't contain minus")
             sumString.add("+")
         }
     }
     fun makingSumFromString(sumString: MutableList<String>) {
-        println("Making sum from string")
+//        println("Making sum from string")
         val sumNum = mutableListOf<Int>() // making a Math expression from string ...
         var j = 0
         
         for (i in 0 until sumString.size) {
             if (j < sumString.size && sumString[j] != "-" && sumString[j] != "+") {
-                println("converting a ${sumString[j]} to number, because it has no additional sign.")
+//                println("converting a ${sumString[j]} to number, because it has no additional sign.")
                 sumNum.add(sumString[j].toInt())
                 j++
                 
             } else if (j < sumString.size && sumString[j] == "-") {
-                println("converting a ${sumString[j]} to opposite number, because it has a minus sign.")
+//                println("converting a ${sumString[j]} to opposite, because it has a minus sign.")
                 sumNum.add(-sumString[j + 1].toInt())
                 j += 2
                 
             } else if (j < sumString.size && sumString[j] == "+") {
-                println("converting a ${sumString[j]} to the same number, because it has a plus sign.")
+//                println("converting a ${sumString[j]} to the same, because it has a plus sign.")
                 sumNum.add(sumString[j + 1].toInt())
                 j += 2
             }
         }
-        println("Printing the sum ...")
+//        println("Printing the sum ...")
         println(sumNum.sum())
     }
     
     if (!invalidExpression) {
-        println("Processing - expression is not invalid.")
+//        println("Processing - expression is not invalid.")
         
         if (inputString.contains(" ") && !inputString.contains("=")) { // if a part has no '=', but has ' '
-            println("String doesn't contain equal sign, but contains spaces.")
+//            println("String doesn't contain equal sign, but contains spaces.")
             
             inputParts = inputString.split(" ")
-            println("Input parts: $inputParts")
+//            println("Input parts: $inputParts")
             
             loop@ for (part in inputParts) {
                 
                 if (part.matches("([-+])?([a-zA-Z]+)".toRegex())) { // if a part is a variable name
-                    println("Part: $part")
-                    println("Checking a part for variable 1")
+//                    println("Part: $part")
+//                    println("Checking a part for variable 1")
                     existingVariable = getVariable(inputMap, part)
                     variableInExpression = true
                     
                     if (existingVariable) {
-                        println("Part: $part")
-                        println("Part is an existing variable")
+//                        println("Part: $part")
+//                        println("Part is an existing variable")
                         
                         if (part.contains("-")) {
-                            println("... that contains minus")
+//                            println("... that contains minus")
                             sum += -inputMap.getValue(part.substringAfter("-"))
                             sumString.add((-inputMap.getValue(part.substringAfter("-"))).toString())
                             
                         } else if (part.contains("+")) {
-                            println("... that contains plus")
+//                            println("... that contains plus")
                             sum += inputMap.getValue(part.substringAfter("+"))
                             sumString.add((inputMap.getValue(part.substringAfter("+"))).toString())
                             
                         } else {
-                            println("... without additional sign")
+//                            println("... without additional sign")
                             sum += inputMap.getValue(part)
                             sumString.add((inputMap.getValue(part).toString()))
                         }
                         
                     } else {
-                        println("Part is a variable that doesn't exist")
+//                        println("Part is a variable that doesn't exist")
                         break@loop
                     }
                     
                 } else if (part.matches("([.?\\-+])+".toRegex())) { // if a part consists of only signs
-                    println("Part: $part")
-                    println("Part is a sign")
+//                    println("Part: $part")
+//                    println("Part is a sign")
                     checkingPartForMinus(part)
                     
                 } else if (part.matches("([-+])?(\\d+)".toRegex())) { // if a part is digits with or without a sign.
-                    println("Part: $part")
-                    println("Part is a digit -> adding it to sum ...")
+//                    println("Part: $part")
+//                    println("Part is a digit -> adding it to sum ...")
                     sum += part.toInt()
                     sumString.add(part)
                 }
             }
             
             if (!variableInExpression || existingVariable) {
-                println("Making sum from string ...")
+//                println("Making sum from string ...")
                 makingSumFromString(sumString)
             }
             
         } else if (!inputString.contains(" ")) {
-            println("String doesn't contain a space.")
+//            println("String doesn't contain a space.")
             if (inputString.matches("([-+])?([a-zA-Z]+)".toRegex())) { // if a part is a variable name
-                println("... and it is a variable")
+//                println("... and it is a variable")
                 getVariable(inputMap, inputString)
             
             } else if (inputString.matches("([-+])?(\\d+)".toRegex())) { // if a part is digits with or without a sign.
-                println("... and it is a digit")
+//                println("... and it is a digit")
                 println(inputString)
             }
         }
-    } else {
-        println("Processing: expression boolean is invalid - aborting processing.")
+//    } else {
+//        println("Processing: expression boolean is invalid - aborting processing.")
     }
 }
 
