@@ -46,7 +46,7 @@ class ValidateInput {
             val invalidPart = !partIsNumber && !partIsVariable && !partIsSigns
             
             if (invalidPart) {
-                println("Invalid expression 1")
+                println("Invalid expression")
                 inputError = true
                 break@loop
                 
@@ -74,14 +74,20 @@ class ValidateInput {
                 }
                 val sign = if (minus > 0 && minus % 2 != 0) "-" else "+"
                 
-                if (sumStack.lastElement() == "+" || sumStack.lastElement() == "-") {
-                    println("Invalid expression 2")
-                    inputError = true
-                    break@loop
+                try {
+                    if (sumStack.lastElement() == "+" || sumStack.lastElement() == "-") {
+                        println("Invalid expression")
+                        inputError = true
+                        break@loop
+        
+                    } else {
+                        sumStack.push(sign)
+                        sumList.add(sign)
+                    }
                     
-                } else {
-                    sumStack.push(sign)
-                    sumList.add(sign)
+                } catch (e: NoSuchElementException) {
+                    println("Invalid expression")
+                    break@loop
                 }
                 
             } else {  // if part is variable
@@ -93,7 +99,7 @@ class ValidateInput {
                 val existingVariable = inputMap.containsKey(variableWithoutSign)
                 
                 if (!existingVariable) {
-                    println("Unknown variable 1")
+                    println("Unknown variable")
                     inputError = true
                     break@loop
                     
@@ -111,8 +117,6 @@ class ValidateInput {
         }
         
         if (!inputError) {
-            println(sumList.joinToString(" "))
-            
             val sum = mutableListOf<Int>()
             var j = 0
             
@@ -130,7 +134,9 @@ class ValidateInput {
                     j += 2
                 }
             }
-            println("${sum.sum()}")
+            if (sum.isNotEmpty()) {
+                println("${sum.sum()}")
+            }
         }
     }
     private fun checkSoloInput(inputString: String, inputMap: MutableMap<String, Int>) {
@@ -142,22 +148,30 @@ class ValidateInput {
         val inputWithoutSign = inputString.removePrefix(inputSign)
         
         val inputIsNumber = inputWithoutSign.matches("(\\d+)".toRegex())
+        val mixedInput = inputString.contains("([a-zA-Z]+)".toRegex()) && inputString.contains("(\\d+)".toRegex())
         val inputIsVariable = inputWithoutSign.matches("([a-zA-Z]+)".toRegex())
         val inputIsNumOrVar = inputIsNumber || inputIsVariable
         val inputIsExistingVar = inputIsVariable && inputMap.containsKey(inputWithoutSign)
         
-        if (!inputIsNumOrVar) {    // if inputString is not a number or a variable
-            println("Invalid expression 3")
+        if (mixedInput) {
+            println("Invalid identifier")
+            
+        } else if (!inputIsNumOrVar) {    // if inputString is not a number or a variable
+            println("Invalid expression")
             
         } else if (inputIsVariable && !inputIsExistingVar) {    // if inputString is a variable, but it's not in inputMap
-            println("Unknown variable 2")
+            println("Unknown variable")
             
         } else {
             if (inputIsNumber) {
                 println(inputString.toInt())
                 
             } else {
-                println("$inputSign${inputMap.getValue(inputWithoutSign)}".toInt())
+                if (inputSign == "-") {
+                    println(-inputMap.getValue(inputWithoutSign))
+                } else {
+                    println(inputMap.getValue(inputWithoutSign))
+                }
             }
         }
     }
@@ -181,11 +195,14 @@ class ValidateInput {
         val rightIsVariableOrNumber = rightIsVariable || rightIsNumber
         val leftIsVariable = leftWithoutSign.matches("([a-zA-Z]+)".toRegex())
         
-        if (!leftIsVariable || !rightIsVariableOrNumber) {
-            println("invalid expression 4")
+        if (!leftIsVariable) {
+            println("invalid identifier")
             
-        } else if (rightIsVariable && !inputMap.containsKey(rightWithoutSign)) {
-            println("Unknown variable 3")
+        } else if (!rightIsVariableOrNumber)
+            println("invalid assignment")
+        
+        else if (rightIsVariable && !inputMap.containsKey(rightWithoutSign)) {
+            println("Unknown variable")
             
         } else {
             if (rightIsVariable) {   // if both sides are variables ...
