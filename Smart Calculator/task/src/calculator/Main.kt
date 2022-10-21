@@ -1,10 +1,11 @@
 package calculator
 
+import java.math.BigInteger
 import java.util.Stack
 import kotlin.system.exitProcess
 
 fun main() {
-    val inputMap = mutableMapOf<String, Int>()
+    val inputMap = mutableMapOf<String, BigInteger>()
     
     while (true) { // looping until '/exit' command
         val inputString = readln().trim() // reading input string
@@ -13,15 +14,10 @@ fun main() {
             continue
         } else {
             ValidateInput(inputString, inputMap).inputSorter()
-    
-//            a= 7
-//            b =2
-//            a * 4 / b - (3 - 1)
-        
         }
     }
 }
-class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
+class ValidateInput(_inputString: String, _inputMap: MutableMap<String, BigInteger>) {
     private val inputString = _inputString
     private val inputMap = _inputMap
     private var editedInputString = ""
@@ -80,10 +76,10 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
             
         } else {
             if (rightIsVariable) {   // if both sides are variables ...
-                if (rightSign == "-" && inputMap.containsKey(rightWithoutSign)) {   // ... and right side has a minus sign
+                if (rightSign == "-" && inputMap.containsKey(rightWithoutSign)) { // ... and right side has a minus sign
                     inputMap[leftWithoutSign] = -inputMap.getValue(rightWithoutSign)
                     
-                } else if (rightSign == "+" && inputMap.containsKey(rightWithoutSign)) {  // ... and right has a plus sign
+                } else if (rightSign == "+" && inputMap.containsKey(rightWithoutSign)) {// ... and right has a plus sign
                     inputMap[leftWithoutSign] = inputMap.getValue(rightWithoutSign)
                     
                 } else {   // ... and right side has no sign
@@ -92,9 +88,9 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
                 
             } else {    // if right side is (anything else) a number ...
                 when (rightSign) {
-                    "-" -> inputMap[leftWithoutSign] = -(rightWithoutSign.toInt())
-                    "+" -> inputMap[leftWithoutSign] = (rightWithoutSign.toInt())
-                    else -> inputMap[left] = (right.toInt())
+                    "-" -> inputMap[leftWithoutSign] = -(rightWithoutSign.toBigInteger())
+                    "+" -> inputMap[leftWithoutSign] = (rightWithoutSign.toBigInteger())
+                    else -> inputMap[left] = (right.toBigInteger())
                 }
             }
         }
@@ -122,7 +118,7 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
             
         } else {
             if (inputIsNumber) {
-                println(inputString.toInt())
+                println(inputString.toBigInteger())
                 
             } else {
                 if (inputSign == "-") {
@@ -226,7 +222,6 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
     }
     private fun infixToPostfix(): String {
         val listFromString = editedInputString.split(" ").filterNot { it == "" }
-//        println("listFromString: $listFromString")
         val stack = Stack<String>()
         var postfix = ""
         
@@ -276,18 +271,15 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
                 }
             }
         }
-        
         while (stack.isNotEmpty()) {
             val temp = stack.pop()
             postfix += "$temp "
         }
-//        println("postfix: $postfix")
         return postfix
     }
     private fun calculateExpression(postfix: String) {
-        
         val listFromString = postfix.split(" ")
-        val stack = Stack<Int>()
+        val stack = Stack<BigInteger>()
         
         loop@for (i in listFromString) {
             val part = i.trim()
@@ -297,8 +289,7 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
             val signs = part.matches("([+|\\-*/])".toRegex())
             
             if (partIsNumber) {
-//                println("$part is a number, pushing it to the stack.")
-                stack.push(part.toInt())
+                stack.push(part.toBigInteger())
                 
             } else if (partIsVariable) {
                 
@@ -314,26 +305,17 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
                     break@loop
                     
                 } else if (variableSign == "-") {
-//                    println("$part is a negative variable, pushing it's value ${-inputMap.getValue(variableWithoutSign)} to the stack.")
                     stack.push(-inputMap.getValue(variableWithoutSign))
                     
                 } else {
-//                    println("$part is a variable, pushing it's value ${inputMap.getValue(variableWithoutSign)} to the stack.")
                     stack.push(inputMap.getValue(variableWithoutSign))
                 }
                 
             } else if (signs) {
-                
-                val secondOperand = if (stack.isNotEmpty()) stack.pop() else 0
-                val firstOperand = if (stack.isNotEmpty()) stack.pop() else 0
-
-//                println("First operand: $firstOperand, sign: $part, secondOperand: $secondOperand")
+                val secondOperand = if (stack.isNotEmpty()) stack.pop() else "0".toBigInteger()
+                val firstOperand = if (stack.isNotEmpty()) stack.pop() else "0".toBigInteger()
                 
                 when (part) {
-//                    "+" -> println("pushing +: ${ stack.push(firstOperand + secondOperand) }")
-//                    "-" -> println("pushing -: ${ stack.push(firstOperand - secondOperand) }")
-//                    "*" -> println("pushing *: ${ stack.push(firstOperand * secondOperand) }")
-//                    "/" -> println("pushing /: ${ stack.push(firstOperand / secondOperand) }")
                     "+" -> stack.push(firstOperand + secondOperand)
                     "-" -> stack.push(firstOperand - secondOperand)
                     "*" -> stack.push(firstOperand * secondOperand)
@@ -341,7 +323,6 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
                 }
             }
         }
-//        println(listFromString)
         println(stack.lastElement())
     }
 }
