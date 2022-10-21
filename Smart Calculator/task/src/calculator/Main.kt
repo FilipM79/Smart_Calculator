@@ -13,6 +13,11 @@ fun main() {
             continue
         } else {
             ValidateInput(inputString, inputMap).inputSorter()
+    
+//            a= 7
+//            b =2
+//            a * 4 / b - (3 - 1)
+        
         }
     }
 }
@@ -132,12 +137,13 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
         val firstString = inputString.replace("\\(".toRegex(), " ( ")
         val secondString = firstString.replace("\\)".toRegex(), " ) ")
         val listFromString = secondString.split(" ").filterNot { it == "" }
-        
+        val bracketsNumDiff = (inputString.count { it == '(' } - inputString.count { it == ')' }) != 0
+    
         var validInput = true
         
         loop@ for (i in listFromString) {
             
-            if (inputString.endsWith("-") || inputString.endsWith("+")) {
+            if (inputString.endsWith("-") || inputString.endsWith("+") || bracketsNumDiff) {
                 println("Invalid expression")
                 validInput = false
                 break@loop
@@ -146,7 +152,9 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
             val part = i.trim()
             val partIsNumber = part.matches("([+|-])?(\\d+)".toRegex())
             val partIsVariable = part.matches("([+|-])?([a-zA-Z]+)".toRegex())
-            val partIsSigns = part.matches("([+|\\-*/]+)".toRegex())
+            val lowerSign = part.matches("([+|-]+)".toRegex())
+            val higherSign = part.matches("([/|*])".toRegex())
+            val partIsSigns = lowerSign || higherSign
             val brackets = part.matches("([)|(])".toRegex())
             val invalidPart = !partIsNumber && !partIsVariable && !partIsSigns && !brackets
             
@@ -218,6 +226,7 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
     }
     private fun infixToPostfix(): String {
         val listFromString = editedInputString.split(" ").filterNot { it == "" }
+//        println("listFromString: $listFromString")
         val stack = Stack<String>()
         var postfix = ""
         
@@ -257,7 +266,7 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
                 if (higherSigns) { // 5.2
                     while (stack.isNotEmpty() && stack.lastElement().matches("([/|*])".toRegex())) {
                         val temp = stack.pop()
-                        postfix = "$temp "
+                        postfix += "$temp "
                     }
                     stack.push(part)
                 }
@@ -272,10 +281,11 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
             val temp = stack.pop()
             postfix += "$temp "
         }
-        
+//        println("postfix: $postfix")
         return postfix
     }
     private fun calculateExpression(postfix: String) {
+        
         val listFromString = postfix.split(" ")
         val stack = Stack<Int>()
         
@@ -287,6 +297,7 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
             val signs = part.matches("([+|\\-*/])".toRegex())
             
             if (partIsNumber) {
+//                println("$part is a number, pushing it to the stack.")
                 stack.push(part.toInt())
                 
             } else if (partIsVariable) {
@@ -303,18 +314,26 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
                     break@loop
                     
                 } else if (variableSign == "-") {
+//                    println("$part is a negative variable, pushing it's value ${-inputMap.getValue(variableWithoutSign)} to the stack.")
                     stack.push(-inputMap.getValue(variableWithoutSign))
                     
                 } else {
+//                    println("$part is a variable, pushing it's value ${inputMap.getValue(variableWithoutSign)} to the stack.")
                     stack.push(inputMap.getValue(variableWithoutSign))
                 }
                 
             } else if (signs) {
+                
                 val secondOperand = if (stack.isNotEmpty()) stack.pop() else 0
                 val firstOperand = if (stack.isNotEmpty()) stack.pop() else 0
+
+//                println("First operand: $firstOperand, sign: $part, secondOperand: $secondOperand")
                 
                 when (part) {
-
+//                    "+" -> println("pushing +: ${ stack.push(firstOperand + secondOperand) }")
+//                    "-" -> println("pushing -: ${ stack.push(firstOperand - secondOperand) }")
+//                    "*" -> println("pushing *: ${ stack.push(firstOperand * secondOperand) }")
+//                    "/" -> println("pushing /: ${ stack.push(firstOperand / secondOperand) }")
                     "+" -> stack.push(firstOperand + secondOperand)
                     "-" -> stack.push(firstOperand - secondOperand)
                     "*" -> stack.push(firstOperand * secondOperand)
@@ -322,6 +341,7 @@ class ValidateInput(_inputString: String, _inputMap: MutableMap<String, Int>) {
                 }
             }
         }
+//        println(listFromString)
         println(stack.lastElement())
     }
 }
